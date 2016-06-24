@@ -1,104 +1,123 @@
+// 大二下小学期.cpp : 定义控制台应用程序的入口点。
+//
+
 #include "stdafx.h"
-#include"iostream"
-#include "fstream"
+#include "Information database.h"
+#include "opereat.h"
 #define MAX 50
-using namespace std;
-#pragma once 
+int mainmenu();
+int mainmenuinf();
+int mainmenuope();
+void Salesprocess(opereat &ope,Information inf);
 
-class Information
+
+
+int _tmain(int argc, _TCHAR* argv[])
 {
-	char barcode[MAX][10];//条形码 商品唯一标识 以字符串形式保存
-	char name[MAX][10];   //商品名称
-	
-	float price[MAX];          //单价
-	float discount[MAX];       //折扣价
-	char unit[MAX][4];
-	int sum;              //库存商品种类
-public:
-	Information(){sum=0;}
-	//录入商品信息
-	void input();
-	//输出商品信息
-	void output( );
-	//通过条形码，查看商品是否存在
-	int search(char barcodex[MAX]);
-	void returninformation(char *barcodex,char *namex,char *unitx,float &price,float &discount);
-};
-void Information::input()
+	int x;
+	Information inf;//基本信息类对象
+	opereat ope;    //基本操作类对象
+
+	do{
+		x=mainmenu();
+		if (x==1)
+		{
+			int y=mainmenuinf();
+			if(y==1)
+			{
+				inf.input();
+			}
+			if(y==2)
+			{
+				inf.output();
+			}
+		}
+		if(x==2)
+		{
+			int y=mainmenuope();
+			if(y==1)
+			{
+				Salesprocess(ope,inf);
+				ope.output1();
+			}
+			if(y==2)
+			{
+				Salesprocess(ope,inf);
+				ope.output2();
+			}
+		}
+	}while(x!=3);	
+	return 0;
+}
+int mainmenu()
 {
-	char barcodex[10];
-	int sumx=sum;
-	int numx;
-	cout<<"the number of input commodity：";
-	cin>>numx;
-	for(int i=0;i<numx;i++)
-	{
-		do{
-			cout<<endl;
-			cout<<"please input commodity code（ITEM000000）：";
-			scanf("%s",barcodex);
-			if(search(barcodex))
-				cout<<"input commodity code fault!"<<endl;
-		}while(search(barcodex));
-		strcpy(barcode[i+sumx],barcodex);
-		cout<<"please input commodity name：";
-		scanf("%s",name[i+sumx]);
-
-		cout<<"please input commodity unit name（瓶/个）：";
-		scanf("%s",unit[i+sumx]);
-
-		cout<<" input commodity price：";
-		cin>>price[i+sumx];
-		cout<<"input commodity discount price：";
-		cin>>discount[i+sumx];
-		
-		sum++;
-	}
+	int i;
+	do{
+	cout<<endl<<endl<<endl;
+	cout<<"        ****************************"<<endl;
+	cout<<"        **  1、system entrance    **"<<endl;
+	cout<<"        **  2、market entrance    **"<<endl;
+	cout<<"        **  3、exit               **"<<endl;
+	cout<<"        ****************************"<<endl;
+	cout<<"            请选择：";
+	cin>>i;
 	system("Cls");
+	}while(i!=2&&i!=1&&i!=3);
+	return i;
 }
-//条形码内容是库内商品码，返回真
-int Information::search(char barcodex[10])
+int mainmenuinf()
 {
-	int result=0;
-	for(int i=0;i<sum;i++)
+	int i;
+	do{
+	cout<<endl<<endl<<endl;
+	cout<<"        ********************************************"<<endl;
+	cout<<"        **  1、create commodity information       **"<<endl;
+	cout<<"        **  2、display commodity information      **"<<endl;
+	cout<<"        **  3、update commodity information       **"<<endl;
+	cout<<"        **  4、exit                               **"<<endl;
+	cout<<"        ********************************************"<<endl;
+	cout<<"            请选择：";
+	cin>>i;
+	system("Cls");
+	}while(i<1&&i>4);
+	return i;
+}
+int mainmenuope()
+{
+	int i;
+	do{
+	cout<<endl<<endl<<endl;
+	cout<<"        ****************************************"<<endl;
+	cout<<"        **  1、sell commodity                 **"<<endl;
+	cout<<"        **  2、sell commodity in discount     **"<<endl;
+	cout<<"        **  3、exit                           **"<<endl;
+	cout<<"        ****************************************"<<endl;
+	cout<<"            请选择：";
+	cin>>i;
+	system("Cls");
+	}while(i<1&&i>3);
+	return i;
+}
+void Salesprocess(opereat &ope,Information inf)
+{
+	char barcode[MAX];
+	int numble;
+	cout<<"please input shopping information（exit when code is0）"<<endl;
+	do
 	{
-		if(!strcmp(barcode[i],barcodex))
-		{
-			result=1;
+		cout<<"please input commodity code：";
+		scanf("%s",barcode);
+		if(!strcmp(barcode,"0"))
 			break;
-		}
-	}
-	return result;
-}
-void Information::output()
-{
-	for(int i=0;i<sum;i++)
-	{
-		cout<<"commodity basic information：";
-		cout<<"code     name    unit name    price    discount price"<<endl;
-		cout<<"                ";
-		printf("%s",barcode[i]);
-		cout<<"   ";
-		printf("%s",name[i]);
-		cout<<"   ";
-		printf("%s",unit[i]);
-		cout<<"   ";
-		cout<<price[i];
-		cout<<"   ";
-		cout<<discount[i]<<endl;
-	}
-}
-void Information::returninformation(char *barcodex,char *namex,char *unitx,float &pricex,float &discountx)
-{
-	for(int i=0;i<sum;i++)
-	{
-		if(!strcmp(barcode[i],barcodex))
+		if(!ope.search(inf,barcode))
 		{
-			strcpy(namex,name[i]);
-			strcpy(unitx,unit[i]);
-			pricex=price[i];
-			discountx=discount[i];
-			break;
+			cout<<"input fault！"<<endl;
+			continue;
 		}
-	}
+		cout<<"please input commodity quantity：";
+		cin>>numble;
+		ope.input(inf,barcode,numble);
+	}while(1);
+	ope.total();
+	
 }
