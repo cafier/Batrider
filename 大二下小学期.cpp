@@ -8,8 +8,6 @@
 int mainmenu();
 int mainmenuinf();
 int mainmenuope();
-void Salesprocess(opereat &ope,Information inf);
-
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -37,13 +35,29 @@ int _tmain(int argc, _TCHAR* argv[])
 			int y=mainmenuope();
 			if(y==1)
 			{
-				Salesprocess(ope,inf);
+				ope.Salesprocess(inf);
 				ope.output1();
 			}
 			if(y==2)
 			{
-				Salesprocess(ope,inf);
+				ope.Salesprocess(inf);
 				ope.output2();
+			}
+			if(y==3)
+			{
+				ope.addin(inf);
+				ope.output1();
+				ope.output2();
+			}
+			if(y==4)
+			{
+				ope.addin(inf);
+				ope.output2();
+			}
+			if(y==5)
+			{
+				ope.Salesprocess(inf);
+				ope.outputpromotion ();
 			}
 		}
 	}while(x!=3);	
@@ -59,7 +73,7 @@ int mainmenu()
 	cout<<"        **  2、market entrance    **"<<endl;
 	cout<<"        **  3、exit               **"<<endl;
 	cout<<"        ****************************"<<endl;
-	cout<<"            请选择：";
+	cout<<"          choose：";
 	cin>>i;
 	system("Cls");
 	}while(i!=2&&i!=1&&i!=3);
@@ -76,7 +90,7 @@ int mainmenuinf()
 	cout<<"        **  3、update commodity information       **"<<endl;
 	cout<<"        **  4、exit                               **"<<endl;
 	cout<<"        ********************************************"<<endl;
-	cout<<"            请选择：";
+	cout<<"            choose：";
 	cin>>i;
 	system("Cls");
 	}while(i<1&&i>4);
@@ -87,37 +101,17 @@ int mainmenuope()
 	int i;
 	do{
 	cout<<endl<<endl<<endl;
-	cout<<"        ****************************************"<<endl;
-	cout<<"        **  1、sell commodity                 **"<<endl;
-	cout<<"        **  2、sell commodity in discount     **"<<endl;
-	cout<<"        **  3、exit                           **"<<endl;
-	cout<<"        ****************************************"<<endl;
+	cout<<"        ************************************************"<<endl;
+	cout<<"        **  1、sell commodity                         **"<<endl;
+	cout<<"        **  2、sell commodity in discount             **"<<endl;
+	cout<<"        **  3、sell commodity with code               **"<<endl;
+	cout<<"        **  4、sell commodity with code in discount   **"<<endl;
+	cout<<"        **  5、sales promotion(three for two)         **"<<endl;
+	cout<<"        **  6、exit                                   **"<<endl;
+	cout<<"        ************************************************"<<endl;
 	cout<<"            请选择：";
 	cin>>i;
 	system("Cls");
-	}while(i<1&&i>3);
+	}while(i<1&&i>6);
 	return i;
-}
-void Salesprocess(opereat &ope,Information inf)
-{
-	char barcode[MAX];
-	int numble;
-	cout<<"please input shopping information（exit when code is0）"<<endl;
-	do
-	{
-		cout<<"please input commodity code：";
-		scanf("%s",barcode);
-		if(!strcmp(barcode,"0"))
-			break;
-		if(!ope.search(inf,barcode))
-		{
-			cout<<"input fault！"<<endl;
-			continue;
-		}
-		cout<<"please input commodity quantity：";
-		cin>>numble;
-		ope.input(inf,barcode,numble);
-	}while(1);
-	ope.total();
-	
 }
